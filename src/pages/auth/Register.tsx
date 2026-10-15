@@ -74,7 +74,7 @@ export default function Register() {
         />
         <Input
           label="Full Name"
-          placeholder="Venkatesh Kumar"
+          placeholder="Student Name"
           autoComplete="name"
           error={errors.name?.message}
           {...register('name')}
