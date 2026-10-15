@@ -20,8 +20,12 @@ import Notifications from '@/pages/student/Notifications'
 import Profile       from '@/pages/student/Profile'
 import MyBagQR       from '@/pages/student/MyBagQR'
 
-// Staff / Admin
-import StaffDashboard from '@/pages/staff/StaffDashboard'
+// Staff
+import StaffDashboard    from '@/pages/staff/StaffDashboard'
+import ScanBag           from '@/pages/staff/ScanBag'
+import StaffOrderDetail  from '@/pages/staff/StaffOrderDetail'
+
+// Admin
 import AdminDashboard from '@/pages/admin/AdminDashboard'
 
 interface ProtectedRouteProps {
@@ -97,7 +101,9 @@ function AppRoutes() {
       <Route path="/my-bag"    element={<ProtectedRoute roles={['student']}><MyBagQR /></ProtectedRoute>} />
 
       {/* Staff */}
-      <Route path="/staff/*" element={<ProtectedRoute roles={['staff', 'admin']}><StaffDashboard /></ProtectedRoute>} />
+      <Route path="/staff"          element={<ProtectedRoute roles={['staff', 'admin']}><StaffDashboard /></ProtectedRoute>} />
+      <Route path="/staff/scan"     element={<ProtectedRoute roles={['staff', 'admin']}><ScanBag /></ProtectedRoute>} />
+      <Route path="/staff/orders/:id" element={<ProtectedRoute roles={['staff', 'admin']}><StaffOrderDetail /></ProtectedRoute>} />
 
       {/* Admin */}
       <Route path="/admin/*" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
