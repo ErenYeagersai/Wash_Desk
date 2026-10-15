@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { LayoutDashboard, Users, Package, ClipboardList, Settings } from 'lucide-react'
+import { LayoutDashboard, Users, Package, ClipboardList, Settings, AlertTriangle } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
 
 const NAV_ITEMS = [
-  { to: '/admin',          label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/orders',   label: 'Orders',    icon: Package },
-  { to: '/admin/users',    label: 'Users',     icon: Users },
-  { to: '/admin/logs',     label: 'Audit Logs',icon: ClipboardList },
-  { to: '/admin/settings', label: 'Settings',  icon: Settings },
+  { to: '/admin',          label: 'Dashboard',  icon: LayoutDashboard },
+  { to: '/admin/orders',   label: 'Orders',     icon: Package },
+  { to: '/admin/delayed',  label: 'Delayed',    icon: AlertTriangle },
+  { to: '/admin/users',    label: 'Users',      icon: Users },
+  { to: '/admin/logs',     label: 'Audit Logs', icon: ClipboardList },
+  { to: '/admin/settings', label: 'Settings',   icon: Settings },
 ]
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

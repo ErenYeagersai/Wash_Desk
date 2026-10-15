@@ -26,7 +26,13 @@ import ScanBag           from '@/pages/staff/ScanBag'
 import StaffOrderDetail  from '@/pages/staff/StaffOrderDetail'
 
 // Admin
-import AdminDashboard from '@/pages/admin/AdminDashboard'
+import AdminDashboard   from '@/pages/admin/AdminDashboard'
+import AdminOrders      from '@/pages/admin/AdminOrders'
+import AdminOrderDetail from '@/pages/admin/AdminOrderDetail'
+import AdminUsers       from '@/pages/admin/AdminUsers'
+import AdminAuditLogs   from '@/pages/admin/AdminAuditLogs'
+import AdminDelayed     from '@/pages/admin/AdminDelayed'
+import AdminSettings    from '@/pages/admin/AdminSettings'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -106,7 +112,13 @@ function AppRoutes() {
       <Route path="/staff/orders/:id" element={<ProtectedRoute roles={['staff', 'admin']}><StaffOrderDetail /></ProtectedRoute>} />
 
       {/* Admin */}
-      <Route path="/admin/*" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin"                element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin/orders"         element={<ProtectedRoute roles={['admin']}><AdminOrders /></ProtectedRoute>} />
+      <Route path="/admin/orders/:id"     element={<ProtectedRoute roles={['admin']}><AdminOrderDetail /></ProtectedRoute>} />
+      <Route path="/admin/users"          element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
+      <Route path="/admin/logs"           element={<ProtectedRoute roles={['admin']}><AdminAuditLogs /></ProtectedRoute>} />
+      <Route path="/admin/delayed"        element={<ProtectedRoute roles={['admin']}><AdminDelayed /></ProtectedRoute>} />
+      <Route path="/admin/settings"       element={<ProtectedRoute roles={['admin']}><AdminSettings /></ProtectedRoute>} />
 
       {/* Fallback */}
       <Route path="*" element={<NotFound />} />
