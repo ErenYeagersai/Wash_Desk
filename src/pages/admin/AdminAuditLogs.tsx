@@ -30,12 +30,11 @@ export default function AdminAuditLogs() {
         .from('audit_logs')
         .select('id, action, old_status, new_status, created_at, laundry_order_id, profiles(name, registration_id), laundry_orders(order_id)')
         .order('created_at', { ascending: false })
-        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+        .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
 
       const rows = (data as unknown as LogRow[]) ?? []
-      setLogs(rows)
-      setHasMore(rows.length === PAGE_SIZE + 1)
-      if (rows.length === PAGE_SIZE + 1) rows.pop()
+      setHasMore(rows.length > PAGE_SIZE)
+      setLogs(rows.slice(0, PAGE_SIZE))
     }
     load()
   }, [page])

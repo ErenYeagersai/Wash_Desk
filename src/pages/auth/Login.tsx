@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button, Input } from '@/components/ui'
@@ -15,7 +15,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function Login() {
-  const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
@@ -32,8 +31,7 @@ export default function Login() {
       setServerError('Invalid email or password.')
       return
     }
-    // AuthContext will update; redirect is handled by the router
-    navigate('/dashboard', { replace: true })
+    // PublicOnlyRoute reads the profile role and redirects to the correct dashboard
   }
 
   return (

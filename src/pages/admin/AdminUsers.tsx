@@ -21,16 +21,15 @@ export default function AdminUsers() {
       .from('profiles')
       .select('*')
       .order('created_at', { ascending: false })
-      .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE)
+      .range(pageNum * PAGE_SIZE, pageNum * PAGE_SIZE + PAGE_SIZE)
 
     if (role) builder = builder.eq('role', role)
     if (q) builder = builder.or(`name.ilike.%${q}%,registration_id.ilike.%${q}%`)
 
     const { data } = await builder
     const rows = (data as Profile[]) ?? []
-    setUsers(rows)
-    setHasMore(rows.length === PAGE_SIZE + 1)
-    if (rows.length === PAGE_SIZE + 1) rows.pop()
+    setHasMore(rows.length > PAGE_SIZE)
+    setUsers(rows.slice(0, PAGE_SIZE))
   }
 
   useEffect(() => { loadUsers(query, roleFilter, page) }, [roleFilter, page])

@@ -99,13 +99,55 @@ export default function ScanBag() {
 
   async function runSearch(q: string) {
     setSearching(true)
+    // PostgREST cannot filter on nested relation columns — query by order_id only,
+    // then also search profiles and bags separately and union the order IDs.
+    const [byOrder, byProfile, byBag] = await Promise.all([
+      supabase
+        .from('laundry_orders')
+        .select('id')
+        .not('status', 'in', '("PICKED_UP","CANCELLED")')
+        .ilike('order_id', `%${q}%`)
+        .limit(10),
+      supabase
+        .from('profiles')
+        .select('id')
+        .or(`name.ilike.%${q}%,registration_id.ilike.%${q}%`)
+        .limit(10),
+      supabase
+        .from('laundry_bags')
+        .select('id')
+        .ilike('bag_id', `%${q}%`)
+        .limit(10),
+    ])
+
+    const orderIds = new Set<string>([
+      ...(byOrder.data?.map(r => r.id) ?? []),
+    ])
+    if (byProfile.data?.length) {
+      const { data: profileOrders } = await supabase
+        .from('laundry_orders')
+        .select('id')
+        .not('status', 'in', '("PICKED_UP","CANCELLED")')
+        .in('student_id', byProfile.data.map(p => p.id))
+        .limit(10)
+      profileOrders?.forEach(r => orderIds.add(r.id))
+    }
+    if (byBag.data?.length) {
+      const { data: bagOrders } = await supabase
+        .from('laundry_orders')
+        .select('id')
+        .not('status', 'in', '("PICKED_UP","CANCELLED")')
+        .in('bag_id', byBag.data.map(b => b.id))
+        .limit(10)
+      bagOrders?.forEach(r => orderIds.add(r.id))
+    }
+
+    if (orderIds.size === 0) { setResults([]); setSearching(false); return }
+
     const { data } = await supabase
       .from('laundry_orders')
       .select('id, order_id, status, profiles(name, registration_id), laundry_bags(bag_id)')
-      .not('status', 'in', '("PICKED_UP","CANCELLED")')
-      .or(
-        `order_id.ilike.%${q}%,profiles.registration_id.ilike.%${q}%,profiles.name.ilike.%${q}%,laundry_bags.bag_id.ilike.%${q}%`
-      )
+      .in('id', [...orderIds])
       .limit(10)
     setResults((data as unknown as typeof results) ?? [])
     setSearching(false)

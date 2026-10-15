@@ -43,18 +43,17 @@ export default function AdminOrders() {
       .from('laundry_orders')
       .select('id, order_id, status, submitted_at, clothes_count, profiles(name, registration_id), laundry_bags(bag_id)')
       .order('submitted_at', { ascending: false })
-      .range(pageNum * PAGE_SIZE, (pageNum + 1) * PAGE_SIZE)
+      .range(pageNum * PAGE_SIZE, pageNum * PAGE_SIZE + PAGE_SIZE)
 
     if (status) builder = builder.eq('status', status)
     if (q) builder = builder.or(
-      `order_id.ilike.%${q}%,profiles.registration_id.ilike.%${q}%,profiles.name.ilike.%${q}%`
+      `order_id.ilike.%${q}%`
     )
 
     const { data } = await builder
     const rows = (data as unknown as OrderRow[]) ?? []
-    setOrders(rows)
-    setHasMore(rows.length === PAGE_SIZE + 1)
-    if (rows.length === PAGE_SIZE + 1) rows.pop()
+    setHasMore(rows.length > PAGE_SIZE)
+    setOrders(rows.slice(0, PAGE_SIZE))
   }
 
   useEffect(() => {
